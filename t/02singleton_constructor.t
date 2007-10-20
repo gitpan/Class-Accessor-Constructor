@@ -6,7 +6,7 @@ use Test::More tests => 10;
 
 package Foo;
 use base 'Class::Accessor::Constructor';
-Foo
+__PACKAGE__
     ->mk_constructor
     ->mk_accessors(qw(name));
 
@@ -21,7 +21,7 @@ package Foo::Bar;
 
 our @ISA = 'Foo';
 
-Foo::Bar->mk_singleton_constructor;
+__PACKAGE__->mk_singleton_constructor;
 
 
 package main;

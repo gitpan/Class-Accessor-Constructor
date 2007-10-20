@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 use Data::Inherited;
@@ -15,7 +15,7 @@ use Tie::Hash;
 our @ISA = qw(Tie::StdHash Data::Inherited Class::Accessor::Complex);
 
 
-Class::Accessor::Constructor::Base
+__PACKAGE__
     ->mk_boolean_accessors(qw(dirty))
     ->mk_set_accessors(qw(hygienic unhygienic));
 

@@ -1,5 +1,8 @@
 Revision history for Perl extension Class::Accessor::Constructor.
 
+0.02  Sa Okt 20 22:17:31 CEST 2007
+        - simplified accessor declaration
+
 0.01  Fr Okt 19 17:42:30 CEST 2007
         - original version
 

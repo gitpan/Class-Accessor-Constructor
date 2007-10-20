@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 use base qw(Class::Accessor Data::Inherited);
@@ -20,7 +20,7 @@ sub mk_singleton_constructor {
     @args = ('new') unless @args;
 
     my $singleton;
-    foreach my $name (@args) {
+    for my $name (@args) {
         my $instance_method = "${name}_instance";
 
         no strict 'refs';
@@ -68,7 +68,7 @@ sub _make_constructor {
         push @{"${target_class}::ISA"}, 'Class::Accessor::Constructor::Base';
     }
 
-    foreach my $name (@args) {
+    for my $name (@args) {
 
         # n00bs getting pwned here
 
@@ -161,7 +161,7 @@ sub _make_constructor {
                 $cache{sorter}{ref $self} = $sorter;
             }
 
-            foreach (sort $sorter keys %args) {
+            for (sort $sorter keys %args) {
                 my $setter = $cache{setter}{$_}{ref $self} ||=
                     $self->can(" __CMM__ $_") || $self->can($_);
 
@@ -194,7 +194,7 @@ Class::Accessor::Constructor - constructor generator
 
   package MyClass;
   use base 'Class::Accessor::Constructor';
-  MyClass->mk_constructor;
+  __PACKAGE__->mk_constructor;
 
 =head1 DESCRIPTION
 
@@ -230,7 +230,7 @@ hash values on the accessor methods denoted by the keys. For example,
 
     package MyClass;
     use base 'Class::Accessor::Constructor';
-    MyClass->mk_constructor;
+    __PACKAGE__->mk_constructor;
 
     package main;
     use MyClass;
@@ -254,7 +254,7 @@ For example:
     package Simple;
     use base 'Class::Accessor::Constructor';
 
-    Simple
+    __PACKAGE__
         ->mk_constructor
         ->mk_accessors(qw(a b));
 
@@ -272,7 +272,7 @@ Defaults can be inherited per L<Data::Inherited>'s C<every_hash()>. Example:
     package A;
     use base 'Class::Accessor::Constructor';
 
-    A->mk_constructor->mk_accessors(qw(a b));
+    __PACKAGE__->mk_constructor->mk_accessors(qw(a b));
 
     use constant DEFAULTS => (a => 7, b => 'default');
 
@@ -307,7 +307,7 @@ Example:
     package Simple;
     use base 'Class::Accessor::Constructor';
 
-    Simple->mk_constructor->mk_accessors(qw(b));
+    __PACKAGE__->mk_constructor->mk_accessors(qw(b));
 
     use constant FIRST_CONSTRUCTOR_ARGS => ('b');
 
@@ -374,12 +374,12 @@ the constructor at the appropriate point. For example:
     package Foo;
     use base 'Class::Accessor::Constructor';
 
-    Foo->mk_constructor;
+    __PACKAGE__->mk_constructor;
 
 
     package Bar;
     use base 'Foo';
-    Bar->mk_constructor_with_dirty;
+    __PACKAGE__->mk_constructor_with_dirty;
 
 Now objects of type C<Foo> will not keep a dirty-flag, but objects of type
 C<Bar> and its descendants will.

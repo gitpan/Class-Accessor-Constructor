@@ -6,14 +6,14 @@ use Test::More tests => 16;
 
 package Foo;
 use base 'Class::Accessor::Constructor';
-Foo
+__PACKAGE__
     ->mk_constructor_with_dirty
     ->mk_accessors(qw(firstname lastname));
 
 
 package Bar;
 use base 'Class::Accessor::Constructor';
-Bar
+__PACKAGE__
     ->mk_constructor
     ->mk_accessors(qw(firstname lastname));
 
