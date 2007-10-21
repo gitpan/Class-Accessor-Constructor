@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 
 use base qw(Class::Accessor Data::Inherited);
@@ -162,8 +162,7 @@ sub _make_constructor {
             }
 
             for (sort $sorter keys %args) {
-                my $setter = $cache{setter}{$_}{ref $self} ||=
-                    $self->can(" __CMM__ $_") || $self->can($_);
+                my $setter = $cache{setter}{$_}{ref $self} ||= $self->can($_);
 
                 unless ($setter) {
                     my $error = sprintf "%s: no setter method for [%s]\n",

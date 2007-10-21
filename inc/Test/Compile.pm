@@ -8,7 +8,7 @@ use File::Spec;
 use UNIVERSAL::require;
 
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 my $Test = Test::Builder->new;
