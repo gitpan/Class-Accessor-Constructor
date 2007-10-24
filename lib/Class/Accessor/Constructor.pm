@@ -4,10 +4,14 @@ use warnings;
 use strict;
 
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 
-use base qw(Class::Accessor Data::Inherited);
+use base qw(
+    Class::Accessor
+    Class::Accessor::Installer
+    Data::Inherited
+);
 
 
 use constant NO_DIRTY   => 0;
@@ -23,13 +27,12 @@ sub mk_singleton_constructor {
     for my $name (@args) {
         my $instance_method = "${name}_instance";
 
-        no strict 'refs';
-        *{"${class}::${name}"} = sub {
+        $self->install_accessor(name => $name, code => sub {
             local $DB::sub = local *__ANON__ = "${class}::${name}"
                 if defined &DB::DB && !$Devel::DProf::VERSION;
             my $self = shift;
             $singleton ||= $self->$instance_method(@_);
-        };
+        });
 
         $class->mk_constructor($instance_method);
     }
@@ -72,8 +75,7 @@ sub _make_constructor {
 
         # n00bs getting pwned here
 
-        no strict 'refs';
-        *{"${target_class}::${name}"} = sub {
+        $self->install_accessor(name => $name, code => sub {
             local $DB::sub = local *__ANON__ = "${target_class}::${name}"
                 if defined &DB::DB && !$Devel::DProf::VERSION;
             my $class = shift;
@@ -176,7 +178,7 @@ sub _make_constructor {
 
             $self->init(%args) if $self->can('init');
             $self;
-        };
+        });
     }
 }
 

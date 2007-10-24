@@ -6,6 +6,7 @@ perl_version '5.006';
 requires 'Data::Inherited';
 requires 'Class::Accessor';
 requires 'Class::Accessor::Complex';
+requires 'Class::Accessor::Installer';
 
 build_requires 'Test::More' => '0.70';
 

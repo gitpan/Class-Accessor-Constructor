@@ -19,6 +19,7 @@ no_index:
 requires: 
   Class::Accessor: 0
   Class::Accessor::Complex: 0
+  Class::Accessor::Installer: 0
   Data::Inherited: 0
   perl: 5.6.0
-version: 0.03
+version: 0.04

@@ -1,5 +1,8 @@
 Revision history for Perl extension Class::Accessor::Constructor.
 
+0.04  Mi Okt 24 11:40:58 CEST 2007
+        - now uses Class::Accessor::Installer
+
 0.03  So Okt 21 20:00:29 CEST 2007
         - removed stray Class::MethodMaker artefact
 
