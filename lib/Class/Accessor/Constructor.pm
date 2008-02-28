@@ -2,9 +2,10 @@ package Class::Accessor::Constructor;
 
 use warnings;
 use strict;
+use Carp 'cluck';
 
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 use base qw(
@@ -27,12 +28,28 @@ sub mk_singleton_constructor {
     for my $name (@args) {
         my $instance_method = "${name}_instance";
 
-        $self->install_accessor(name => $name, code => sub {
-            local $DB::sub = local *__ANON__ = "${class}::${name}"
-                if defined &DB::DB && !$Devel::DProf::VERSION;
-            my $self = shift;
-            $singleton ||= $self->$instance_method(@_);
-        });
+        $self->install_accessor(
+            name => $name,
+            code => sub {
+                local $DB::sub = local *__ANON__ = "${class}::${name}"
+                    if defined &DB::DB && !$Devel::DProf::VERSION;
+                my $self = shift;
+                $singleton ||= $self->$instance_method(@_);
+            },
+            purpose => <<'EODOC',
+Creates and returns a new object. The object will be a singleton, so repeated
+calls to the constructor will always return the same object. The constructor
+will accept as arguments a list of pairs, from component name to initial
+value. For each pair, the named component is initialized by calling the
+method of the same name with the given value. If called with a single hash
+reference, it is dereferenced and its key/value pairs are set as described
+before.
+EODOC
+            example => [
+                "my \$obj = $class->$name;",
+                "my \$obj = $class->$name(\%args);",
+            ],
+        );
 
         $class->mk_constructor($instance_method);
     }
@@ -130,7 +147,7 @@ sub _make_constructor {
             # If a class wants to impose a certain order in which the args are
             # set, it can do so by creating a special subroutine,
             # SORT_CONSTRUCTOR_ARGS. If no such subroutine is found,
-            # alphabetical sort order is used. See Class::Framework::Storable
+            # alphabetical sort order is used. See Class::Scaffold::Storable
             # for an example of how to use this. If it just wants to order
             # some args first, it can define a FIRST_CONSTRUCTOR_ARGS list
             # (will be cumulative over inheritance tree due to NEXT.pm magic)
@@ -178,7 +195,18 @@ sub _make_constructor {
 
             $self->init(%args) if $self->can('init');
             $self;
-        });
+        },
+        purpose => <<'EODOC',
+Creates and returns a new object. The constructor will accept as arguments a
+list of pairs, from component name to initial value. For each pair, the named
+component is initialized by calling the method of the same name with the given
+value. If called with a single hash reference, it is dereferenced and its
+key/value pairs are set as described before.
+EODOC
+        example => [
+            "my \$obj = $target_class->$name;",
+            "my \$obj = $target_class->$name(\%args);",
+        ]);
     }
 }
 
@@ -186,6 +214,8 @@ sub _make_constructor {
 1;
 
 __END__
+
+
 
 =head1 NAME
 
@@ -202,6 +232,9 @@ Class::Accessor::Constructor - constructor generator
 This module generates accessors for your class in the same spirit as
 L<Class::Accessor> does. While the latter deals with accessors for scalar
 values, this module provides accessor makers for rather flexible constructors.
+
+The accessor generators also generate documentation ready to be used with
+L<Pod::Generated>.
 
 =head1 ACCESSORS
 
@@ -394,12 +427,16 @@ Like C<constructor> but constructs a singleton object.
 If you talk about this module in blogs, on del.icio.us or anywhere else,
 please use the C<classaccessorconstructor> tag.
 
+=head1 VERSION 
+                   
+This document describes version 0.05 of L<Class::Accessor::Constructor>.
+
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-class-accessor-constructor@rt.cpan.org>, or through the web interface at
+C<<bug-class-accessor-constructor@rt.cpan.org>>, or through the web interface at
 L<http://rt.cpan.org>.
 
 =head1 INSTALLATION
@@ -418,10 +455,11 @@ Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007 by Marcel GrE<uuml>nauer
+Copyright 2007-2008 by Marcel GrE<uuml>nauer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
+
 
 =cut
 

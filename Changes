@@ -1,14 +1,43 @@
-Revision history for Perl extension Class::Accessor::Constructor.
-
-0.04  Mi Okt 24 11:40:58 CEST 2007
-        - now uses Class::Accessor::Installer
-
-0.03  So Okt 21 20:00:29 CEST 2007
-        - removed stray Class::MethodMaker artefact
-
-0.02  Sa Okt 20 22:17:31 CEST 2007
-        - simplified accessor declaration
-
-0.01  Fr Okt 19 17:42:30 CEST 2007
-        - original version
-
+---
+global:
+  name: Class-Accessor-Constructor
+releases:
+  - author: 'Marcel Gruenauer <marcel@cpan.org>'
+    changes:
+      - Converted Changes file to YAML style
+      - now imports cluck() from Carp.pm to make clucking on unknown setters work
+      - '.shipit: added Twitter step'
+      - 'Makefile.PL: added auto_install() and process_templates()'
+      - 'lib/*: converted to template'
+      - updated MANIFEST
+      - added documentation generated to all accessor generators
+      - documented that it generates documentation
+      - updated t/perlcriticrc
+    date: 2007-11-21T18:21:01Z
+    tags:
+      - NEWFEATURE
+    version: 0.05
+  - author: 'Marcel Gruenauer <marcel@cpan.org>'
+    changes:
+      - now uses Class::Accessor::Installer
+    date: 2007-10-24T11:40:58+02:00
+    tags: []
+    version: 0.04
+  - author: 'Marcel Gruenauer <marcel@cpan.org>'
+    changes:
+      - removed stray Class::MethodMaker artefact
+    date: 2007-10-21T20:00:29+02:00
+    tags: []
+    version: 0.03
+  - author: 'Marcel Gruenauer <marcel@cpan.org>'
+    changes:
+      - simplified accessor declaration
+    date: 2007-10-20T22:17:31+02:00
+    tags: []
+    version: 0.02
+  - author: 'Marcel Gruenauer <marcel@cpan.org>'
+    changes:
+      - original version
+    date: 2007-10-19T17:42:30+02:00
+    tags: []
+    version: 0.01

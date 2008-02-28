@@ -5,10 +5,11 @@ use warnings;
 use strict;
 use File::Spec;
 
+
+our $VERSION = '0.06';
+
+
 use base 'Module::Install::Base';
-
-
-our $VERSION = '0.05';
 
 
 sub use_standard_tests {
@@ -135,5 +136,7 @@ sub write_standard_test_perl_critic {
 
 __END__
 
-#line 249
+{% USE p = PodGenerated %}
+
+#line 239
 

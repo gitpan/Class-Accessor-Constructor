@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 use Data::Inherited;
@@ -55,6 +55,8 @@ sub STORE {
 
 __END__
 
+
+
 =head1 NAME
 
 Class::Accessor::Constructor::Base - Support for an automated dirty flag in
@@ -76,12 +78,16 @@ usage.
 If you talk about this module in blogs, on del.icio.us or anywhere else,
 please use the C<classaccessorconstructor> tag.
 
+=head1 VERSION 
+                   
+This document describes version 0.05 of L<Class::Accessor::Constructor::Base>.
+
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.
 
 Please report any bugs or feature requests to
-C<bug-class-accessor-constructor@rt.cpan.org>, or through the web interface at
+C<<bug-class-accessor-constructor@rt.cpan.org>>, or through the web interface at
 L<http://rt.cpan.org>.
 
 =head1 INSTALLATION
@@ -100,10 +106,11 @@ Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007 by Marcel GrE<uuml>nauer
+Copyright 2007-2008 by Marcel GrE<uuml>nauer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
+
 
 =cut
 
