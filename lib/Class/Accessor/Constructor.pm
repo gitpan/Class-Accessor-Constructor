@@ -5,7 +5,7 @@ use strict;
 use Carp 'cluck';
 
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 use base qw(
@@ -144,43 +144,16 @@ sub _make_constructor {
                 [ $self->every_hash('DEFAULTS') ];
             %args = (@$defaults, %args);
 
-            # If a class wants to impose a certain order in which the args are
-            # set, it can do so by creating a special subroutine,
-            # SORT_CONSTRUCTOR_ARGS. If no such subroutine is found,
-            # alphabetical sort order is used. See Class::Scaffold::Storable
-            # for an example of how to use this. If it just wants to order
-            # some args first, it can define a FIRST_CONSTRUCTOR_ARGS list
-            # (will be cumulative over inheritance tree due to NEXT.pm magic)
+            # If a class wants to order some args first, it can define a
+            # FIRST_CONSTRUCTOR_ARGS list (will be cumulative over inheritance
+            # tree due to NEXT.pm magic)
 
-            my $sorter;
-            unless ($sorter = $cache{sorter}{ref $self}) {
-                unless ($sorter = $self->can('SORT_CONSTRUCTOR_ARGS')) {
-                    my @first = $self->every_list('FIRST_CONSTRUCTOR_ARGS');
+            my @first = $self->every_list('FIRST_CONSTRUCTOR_ARGS');
 
-                    # make arg list unique; duplicate args could happen in
-                    # multiple inheritance
+            my %seen;
+            for (@first, keys %args) {
+                next if $seen{$_}++;
 
-                    my %first = map { $_ => 1 } @first;
-                    @first = keys %first;
-                    if (@first) {
-                        $sorter = sub {
-                            (grep { $b eq $_ } @first)
-                                      cmp
-                            (grep { $a eq $_ } @first)
-                        };
-                    } else {
-
-                        # optimization: if there are no requirements on which
-                        # args to put first, just use the default sort
-                        # routine.
-
-                        $sorter = sub { $a cmp $b };
-                    }
-                }
-                $cache{sorter}{ref $self} = $sorter;
-            }
-
-            for (sort $sorter keys %args) {
                 my $setter = $cache{setter}{$_}{ref $self} ||= $self->can($_);
 
                 unless ($setter) {
@@ -323,18 +296,12 @@ then
     my $test1 = A->new;   # now a ==  7, b == 'default'
     my $test2 = B->new;   # now a == 23, b == 'default'
 
-If a class wants to impose a certain order in which the args are set, it can
-do so by creating a special subroutine, C<SORT_CONSTRUCTOR_ARGS()>. If no such
-subroutine is found, alphabetical sort order is used. If it just wants to
-order some args first, it can define a C<FIRST_CONSTRUCTOR_ARGS()> list, which
-will be cumulative over inheritance tree due to L<Data::Inherited>.
-
-Argument reordering might be useful if setting an argument depends on another
-argument having been set already. C<SORT_CONSTRUCTOR_ARGS()> is given a list
-of argument names and is expected to return the list in the desired order.
-C<FIRST_CONSTRUCTOR_ARGS()> should return a list of argument names that have
-to come first; if a constructor is called, those arguments are set first,
-whereas the other ones are set in an unspecified order.
+If a class wants to order some args first, it can define a
+C<FIRST_CONSTRUCTOR_ARGS()> list, which will be cumulative over inheritance
+tree due to L<Data::Inherited>. C<FIRST_CONSTRUCTOR_ARGS()> should return a
+list of argument names that have to come first; if a constructor is called,
+those arguments are set first, whereas the other ones are set in an
+unspecified order.
 
 Example:
 
@@ -422,21 +389,11 @@ C<Bar> and its descendants will.
 
 Like C<constructor> but constructs a singleton object.
 
-=head1 TAGS
-
-If you talk about this module in blogs, on del.icio.us or anywhere else,
-please use the C<classaccessorconstructor> tag.
-
-=head1 VERSION 
-                   
-This document describes version 0.05 of L<Class::Accessor::Constructor>.
-
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.
 
-Please report any bugs or feature requests to
-C<<bug-class-accessor-constructor@rt.cpan.org>>, or through the web interface at
+Please report any bugs or feature requests through the web interface at
 L<http://rt.cpan.org>.
 
 =head1 INSTALLATION
@@ -449,13 +406,13 @@ The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a CPAN
 site near you. Or see <http://www.perl.com/CPAN/authors/id/M/MA/MARCEL/>.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007-2008 by Marcel GrE<uuml>nauer
+Copyright 2007-2008 by the authors.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
