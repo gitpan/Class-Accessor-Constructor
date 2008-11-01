@@ -5,7 +5,7 @@ use strict;
 use Carp 'cluck';
 
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 
 use base qw(
@@ -94,7 +94,7 @@ sub _make_constructor {
 
         $self->install_accessor(name => $name, code => sub {
             local $DB::sub = local *__ANON__ = "${target_class}::${name}"
-                if defined &DB::DB && !$Devel::DProf::VERSION;
+                if defined &DB::DB;
             my $class = shift;
             my $self;
 
@@ -128,8 +128,21 @@ sub _make_constructor {
             our %cache;
             my %args;
 
-            my $munger = $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self} ||=
-                $self->can('MUNGE_CONSTRUCTOR_ARGS');
+            # The following should be equivalent to
+            #
+            # my $munger = $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self} //=
+            #     $self->can('MUNGE_CONSTRUCTOR_ARGS');
+            #
+            # but we want this to run under perl 5.8.8 as well. Can't use ||=
+            # with can() because if the object "can't", then can will return
+            # undef so it will check again the next time.
+
+            my $munger;
+            unless (exists $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self}) {
+                $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self} = 
+                    $self->can('MUNGE_CONSTRUCTOR_ARGS');
+            }
+            $munger = $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self};
 
             if ($munger) {
                 %args = $munger->($self, @_);
@@ -148,13 +161,19 @@ sub _make_constructor {
             # FIRST_CONSTRUCTOR_ARGS list (will be cumulative over inheritance
             # tree due to NEXT.pm magic)
 
-            my @first = $self->every_list('FIRST_CONSTRUCTOR_ARGS');
+            # my @first = $self->every_list('FIRST_CONSTRUCTOR_ARGS');
+            my $first = $cache{FIRST_CONSTRUCTOR_ARGS}{ref $self} ||=
+               [ $self->every_list('FIRST_CONSTRUCTOR_ARGS') ];
 
             my %seen;
-            for (@first, keys %args) {
+            for (@$first, keys %args) {
                 next if $seen{$_}++;
 
-                my $setter = $cache{setter}{$_}{ref $self} ||= $self->can($_);
+                my $setter;
+                unless (exists $cache{setter}{$_}{ref $self}) {
+                    $cache{setter}{$_}{ref $self} = $self->can($_);
+                }
+                $setter = $cache{setter}{$_}{ref $self};
 
                 unless ($setter) {
                     my $error = sprintf "%s: no setter method for [%s]\n",
@@ -166,7 +185,12 @@ sub _make_constructor {
                 $setter->($self, $args{$_});
             }
 
-            $self->init(%args) if $self->can('init');
+            my $init;
+            unless (exists $cache{INIT}{ref $self}) {
+                $cache{INIT}{ref $self} = $self->can('init');
+            }
+            $init = $cache{INIT}{ref $self};
+            $self->init(%args) if $init;
             $self;
         },
         purpose => <<'EODOC',

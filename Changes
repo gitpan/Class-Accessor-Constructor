@@ -1,5 +1,8 @@
 Revision history for Perl extension Class-Accessor-Constructor
 
+0.07 Thu Oct 30 16:17:29 CET 2008 (Marcel Gruenauer <marcel@cpan.org>)
+     - Caching optimizations
+
 0.06  Wed Oct  8 18:39:34 CEST 2008 (Marcel Gruenauer <marcel@cpan.org>)
      - Dropped support for SORT_CONSTRUCTOR_ARGS; slowed down things too much
        if called often, as it would be in large OOP apps.
