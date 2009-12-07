@@ -1,38 +1,29 @@
 package Class::Accessor::Constructor;
-
+use 5.006;
 use warnings;
 use strict;
 use Carp 'cluck';
-
-
-our $VERSION = '0.07';
-
-
+our $VERSION = '0.08';
 use base qw(
-    Class::Accessor
-    Class::Accessor::Installer
-    Data::Inherited
+  Class::Accessor
+  Class::Accessor::Installer
+  Data::Inherited
 );
-
-
 use constant NO_DIRTY   => 0;
 use constant WITH_DIRTY => 1;
-
 
 sub mk_singleton_constructor {
     my ($self, @args) = @_;
     my $class = ref $self || $self;
     @args = ('new') unless @args;
-
     my $singleton;
     for my $name (@args) {
         my $instance_method = "${name}_instance";
-
         $self->install_accessor(
             name => $name,
             code => sub {
                 local $DB::sub = local *__ANON__ = "${class}::${name}"
-                    if defined &DB::DB && !$Devel::DProf::VERSION;
+                  if defined &DB::DB && !$Devel::DProf::VERSION;
                 my $self = shift;
                 $singleton ||= $self->$instance_method(@_);
             },
@@ -50,27 +41,22 @@ EODOC
                 "my \$obj = $class->$name(\%args);",
             ],
         );
-
         $class->mk_constructor($instance_method);
     }
-
-    $self;  # for chaining
+    $self;    # for chaining
 }
-
 
 sub mk_constructor {
     my $self = shift;
     $self->_make_constructor(NO_DIRTY, @_);
-    $self;  # for chaining
+    $self;    # for chaining
 }
-
 
 sub mk_constructor_with_dirty {
     my $self = shift;
     $self->_make_constructor(WITH_DIRTY, @_);
-    $self;  # for chaining
+    $self;    # for chaining
 }
-
 
 sub _make_constructor {
     my ($self, $should_dirty, @args) = @_;
@@ -81,142 +67,127 @@ sub _make_constructor {
     # inherit from Class::Accessor::Constructor::Base (which in turn inherits
     # from Data::Inherited), so we need to make sure that $class actually
     # inherits from Class::Accessor::Constructor::Base.
-
-    unless (UNIVERSAL::isa($target_class, 'Class::Accessor::Constructor::Base')) {
+    unless (UNIVERSAL::isa($target_class, 'Class::Accessor::Constructor::Base'))
+    {
         require Class::Accessor::Constructor::Base;
         no strict 'refs';
         push @{"${target_class}::ISA"}, 'Class::Accessor::Constructor::Base';
     }
-
     for my $name (@args) {
 
         # n00bs getting pwned here
+        $self->install_accessor(
+            name => $name,
+            code => sub {
+                local $DB::sub = local *__ANON__ = "${target_class}::${name}"
+                  if defined &DB::DB;
+                my $class = shift;
+                my $self;
 
-        $self->install_accessor(name => $name, code => sub {
-            local $DB::sub = local *__ANON__ = "${target_class}::${name}"
-                if defined &DB::DB;
-            my $class = shift;
-            my $self;
+                # If we're given a reference, don't tie() it. Only tie()
+                # completely new objects.
+                if (ref $class) {
+                    $self = $class;
+                } else {
+                    my %self = ();
+                    tie %self, 'Class::Accessor::Constructor::Base'
+                      if $should_dirty;
+                    $self = bless \%self, $class;
+                    if ($should_dirty) {
 
-            # If we're given a reference, don't tie() it. Only tie()
-            # completely new objects.
+                      # set the results of every_list() from here, because
+                      # a tied class' STORE() method is given a $self with a ref
+                      # of the tied class, not the original class.
+                        $self->hygienic(scalar $self->every_list('HYGIENIC'));
+                        $self->unhygienic(
+                            scalar $self->every_list('UNHYGIENIC'));
 
-            if (ref $class) {
-                $self = $class;
-            } else {
-                my %self = ();
-                tie %self, 'Class::Accessor::Constructor::Base'
-                    if $should_dirty;
-                $self = bless \%self, $class;
-                if ($should_dirty) {
-
-                    # set the results of every_list() from here, because
-                    # a tied class' STORE() method is given a $self with a ref
-                    # of the tied class, not the original class.
-
-                    $self->hygienic(scalar $self->every_list('HYGIENIC'));
-                    $self->unhygienic(scalar $self->every_list('UNHYGIENIC'));
-
-                    # Reset dirty flag because setting the above will cause
-                    # the dirty flag to be set.
-
-                    $self->clear_dirty;
-
+                        # Reset dirty flag because setting the above will cause
+                        # the dirty flag to be set.
+                        $self->clear_dirty;
+                    }
                 }
-            }
+                our %cache;
+                my %args;
 
-            our %cache;
-            my %args;
-
-            # The following should be equivalent to
-            #
-            # my $munger = $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self} //=
-            #     $self->can('MUNGE_CONSTRUCTOR_ARGS');
-            #
-            # but we want this to run under perl 5.8.8 as well. Can't use ||=
-            # with can() because if the object "can't", then can will return
-            # undef so it will check again the next time.
-
-            my $munger;
-            unless (exists $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self}) {
-                $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self} = 
-                    $self->can('MUNGE_CONSTRUCTOR_ARGS');
-            }
-            $munger = $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self};
-
-            if ($munger) {
-                %args = $munger->($self, @_);
-            } else {
-                %args = (scalar(@_ == 1) && ref($_[0]) eq 'HASH')
-                    ? %{ $_[0] } : @_;
-            }
-
-            # Note: DEFAULTS are cached, so they have to be static.
-
-            my $defaults = $cache{DEFAULTS}{ref $self} ||=
-                [ $self->every_hash('DEFAULTS') ];
-            %args = (@$defaults, %args);
-
-            # If a class wants to order some args first, it can define a
-            # FIRST_CONSTRUCTOR_ARGS list (will be cumulative over inheritance
-            # tree due to NEXT.pm magic)
-
-            # my @first = $self->every_list('FIRST_CONSTRUCTOR_ARGS');
-            my $first = $cache{FIRST_CONSTRUCTOR_ARGS}{ref $self} ||=
-               [ $self->every_list('FIRST_CONSTRUCTOR_ARGS') ];
-
-            my %seen;
-            for (@$first, keys %args) {
-                next if $seen{$_}++;
-
-                my $setter;
-                unless (exists $cache{setter}{$_}{ref $self}) {
-                    $cache{setter}{$_}{ref $self} = $self->can($_);
+               # The following should be equivalent to
+               #
+               # my $munger = $cache{MUNGE_CONSTRUCTOR_ARGS}{ref $self} //=
+               #     $self->can('MUNGE_CONSTRUCTOR_ARGS');
+               #
+               # but we want this to run under perl 5.8.8 as well. Can't use ||=
+               # with can() because if the object "can't", then can will return
+               # undef so it will check again the next time.
+                my $munger;
+                unless (exists $cache{MUNGE_CONSTRUCTOR_ARGS}{ ref $self }) {
+                    $cache{MUNGE_CONSTRUCTOR_ARGS}{ ref $self } =
+                      $self->can('MUNGE_CONSTRUCTOR_ARGS');
                 }
-                $setter = $cache{setter}{$_}{ref $self};
-
-                unless ($setter) {
-                    my $error = sprintf "%s: no setter method for [%s]\n",
-                        ref($self), $_;
-                    cluck $error;
-                    die $error;
+                $munger = $cache{MUNGE_CONSTRUCTOR_ARGS}{ ref $self };
+                if ($munger) {
+                    %args = $munger->($self, @_);
+                } else {
+                    %args =
+                      (scalar(@_ == 1) && ref($_[0]) eq 'HASH')
+                      ? %{ $_[0] }
+                      : @_;
                 }
 
-                $setter->($self, $args{$_});
-            }
+                # Note: DEFAULTS are cached, so they have to be static.
+                my $defaults = $cache{DEFAULTS}{ ref $self } ||=
+                  [ $self->every_hash('DEFAULTS') ];
+                %args = (@$defaults, %args);
 
-            my $init;
-            unless (exists $cache{INIT}{ref $self}) {
-                $cache{INIT}{ref $self} = $self->can('init');
-            }
-            $init = $cache{INIT}{ref $self};
-            $self->init(%args) if $init;
-            $self;
-        },
-        purpose => <<'EODOC',
+              # If a class wants to order some args first, it can define a
+              # FIRST_CONSTRUCTOR_ARGS list (will be cumulative over inheritance
+              # tree due to NEXT.pm magic)
+              # my @first = $self->every_list('FIRST_CONSTRUCTOR_ARGS');
+                my $first = $cache{FIRST_CONSTRUCTOR_ARGS}{ ref $self } ||=
+                  [ $self->every_list('FIRST_CONSTRUCTOR_ARGS') ];
+                my %seen;
+                for (@$first, keys %args) {
+                    next if $seen{$_}++;
+                    my $setter;
+                    unless (exists $cache{setter}{$_}{ ref $self }) {
+                        $cache{setter}{$_}{ ref $self } = $self->can($_);
+                    }
+                    $setter = $cache{setter}{$_}{ ref $self };
+                    unless ($setter) {
+                        my $error = sprintf "%s: no setter method for [%s]\n",
+                          ref($self), $_;
+                        cluck $error;
+                        die $error;
+                    }
+                    $setter->($self, $args{$_});
+                }
+                my $init;
+                unless (exists $cache{INIT}{ ref $self }) {
+                    $cache{INIT}{ ref $self } = $self->can('init');
+                }
+                $init = $cache{INIT}{ ref $self };
+                $self->init(%args) if $init;
+                $self;
+            },
+            purpose => <<'EODOC',
 Creates and returns a new object. The constructor will accept as arguments a
 list of pairs, from component name to initial value. For each pair, the named
 component is initialized by calling the method of the same name with the given
 value. If called with a single hash reference, it is dereferenced and its
 key/value pairs are set as described before.
 EODOC
-        example => [
-            "my \$obj = $target_class->$name;",
-            "my \$obj = $target_class->$name(\%args);",
-        ]);
+            example => [
+                "my \$obj = $target_class->$name;",
+                "my \$obj = $target_class->$name(\%args);",
+            ]
+        );
     }
 }
-
-
 1;
-
 __END__
-
-
 
 =head1 NAME
 
-Class::Accessor::Constructor - constructor generator
+Class::Accessor::Constructor - Constructor generator
 
 =head1 SYNOPSIS
 
@@ -246,13 +217,13 @@ quite powerful and flexible. It supports
 
 =over 4
 
-=item customizable munging of arguments
+=item C<customizable munging of arguments>
 
-=item customizable sorting of arguments
+=item C<customizable sorting of arguments>
 
-=item inherited default values
+=item C<inherited default values>
 
-=item an optional init() method
+=item C<an optional init() method>
 
 =back
 
@@ -276,9 +247,9 @@ is the same as
 
 The constructor will also call an C<init()> method, if there is one.
 
-The arguments are pre-munged - if a single argument is a hashref is passed in,
-it is expanded out, the the key/value pairs - whether originally as a hash
-ref or a list - may be reordered as typically occurs with perl hashes.
+The arguments are munged beforehand - if a single argument is a hashref is
+passed in, it is expanded out, the the key/value pairs - whether originally as
+a hash ref or a list - may be reordered as typically occurs with perl hashes.
 
 For example:
 
@@ -348,7 +319,7 @@ then
 
 will set C<b> first, then set <a> (to 3).
 
-As mentioned, arguments are pre-munged automatically, but you can also
+As mentioned, arguments are munged beforehand automatically, but you can also
 customize the munging. By default,
 
     my $test = Simple->new(a => 1, b => 2)
@@ -387,11 +358,11 @@ Like C<mk_constructor()>, but also keeps track of whether the object has been
 modified. This is useful, for example, when you have read the object from a
 storage and at the end you want to write it back if it has changed. This
 method generated saves you from having to update a dirty-flag in each
-accessor. It achieves its purpose by tie-ing the blessed hash that is the
-object, so there is some performance penalty. But it also works when someone
-tries to break encapsulation by accessing hash elements directly instead of
-going via the accessors. See L<Class::Accessor::Constructor::Base> for
-details.
+accessor. It achieves its purpose by doing a tie() on the blessed hash that is
+the object, so there is some performance penalty. But it also works when
+someone tries to break encapsulation by accessing hash elements directly
+instead of going via the accessors. See L<Class::Accessor::Constructor::Base>
+for details.
 
 If you want that behaviour only in a part of your inheritance tree, redefine
 the constructor at the appropriate point. For example:
@@ -428,7 +399,7 @@ See perlmodinstall for information and options on installing Perl modules.
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a CPAN
-site near you. Or see <http://www.perl.com/CPAN/authors/id/M/MA/MARCEL/>.
+site near you. Or see L<http://search.cpan.org/dist/Class-Accessor-Constructor/>.
 
 =head1 AUTHORS
 
@@ -436,11 +407,9 @@ Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007-2008 by the authors.
+Copyright 2007-2009 by the authors.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-
 =cut
-
