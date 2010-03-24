@@ -1,9 +1,10 @@
-This is the Perl module Class::Accessor::Constructor.
+
+This is the Perl distribution Class-Accessor-Constructor.
 
 ## Installation
 
-Class::Accessor::Constructor installation is straightforward. If your CPAN
-shell is set up, you should just be able to do
+Class-Accessor-Constructor installation is straightforward.
+If your CPAN shell is set up, you should just be able to do
 
     % cpan Class::Accessor::Constructor
 
@@ -18,11 +19,9 @@ Then install it:
 
 ## Documentation
 
-Class::Accessor::Constructor documentation is available as in POD. So you can
-do:
+Class-Accessor-Constructor documentation is available as in POD.
+So you can do:
 
     % perldoc Class::Accessor::Constructor
 
-to read the documentation online with your favorite pager.
-
-Marcel Gruenauer
+to read the documentation with your favorite pager.

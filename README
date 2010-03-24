@@ -1,6 +1,9 @@
 NAME
     Class::Accessor::Constructor - Constructor generator
 
+VERSION
+    version 1.100830
+
 SYNOPSIS
       package MyClass;
       use base 'Class::Accessor::Constructor';
@@ -15,10 +18,7 @@ DESCRIPTION
     The accessor generators also generate documentation ready to be used
     with Pod::Generated.
 
-ACCESSORS
-    This section describes the accessor makers offered by this module, and
-    the methods it generates.
-
+METHODS
   mk_constructor
     Takes an array of strings as its argument. If no argument is given, it
     uses "new" as the default. For each string it creates a class
@@ -121,7 +121,7 @@ ACCESSORS
 
         my $test = Simple->new(a => 1, b => 2);
 
-    will set "b" first, then set <a> (to 3).
+    will set "b" first, then set "a" (to 3).
 
     As mentioned, arguments are munged beforehand automatically, but you can
     also customize the munging. By default,
@@ -175,7 +175,6 @@ ACCESSORS
 
         __PACKAGE__->mk_constructor;
 
-
         package Bar;
         use base 'Foo';
         __PACKAGE__->mk_constructor_with_dirty;
@@ -186,28 +185,34 @@ ACCESSORS
   mk_singleton_constructor
     Like "constructor" but constructs a singleton object.
 
-BUGS AND LIMITATIONS
-    No bugs have been reported.
-
-    Please report any bugs or feature requests through the web interface at
-    <http://rt.cpan.org>.
-
 INSTALLATION
     See perlmodinstall for information and options on installing Perl
     modules.
 
+BUGS AND LIMITATIONS
+    No bugs have been reported.
+
+    Please report any bugs or feature requests through the web interface at
+    <http://rt.cpan.org/Public/Dist/Display.html?Name=Class-Accessor-Constru
+    ctor>.
+
 AVAILABILITY
     The latest version of this module is available from the Comprehensive
     Perl Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a
-    CPAN site near you. Or see
+    CPAN site near you, or see
     <http://search.cpan.org/dist/Class-Accessor-Constructor/>.
 
-AUTHORS
-    Marcel Grünauer, "<marcel@cpan.org>"
+    The development version lives at
+    <http://github.com/hanekomu/Class-Accessor-Constructor/>. Instead of
+    sending patches, please fork this project using the standard git and
+    github infrastructure.
+
+AUTHOR
+      Marcel Gruenauer <marcel@cpan.org>
 
 COPYRIGHT AND LICENSE
-    Copyright 2007-2009 by the authors.
+    This software is copyright (c) 2007 by Marcel Gruenauer.
 
-    This library is free software; you can redistribute it and/or modify it
-    under the same terms as Perl itself.
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
 

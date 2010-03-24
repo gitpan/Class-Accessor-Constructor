@@ -1,21 +1,18 @@
-package Class::Accessor::Constructor::Base;
+use 5.008;
 use strict;
 use warnings;
-our $VERSION = '0.08';
+
+package Class::Accessor::Constructor::Base;
+our $VERSION = '1.100830';
+# ABSTRACT: Support for an automated dirty flag in hash-based classes
 use Data::Inherited;
 use Class::Accessor::Complex;
 use Tie::Hash;
 our @ISA = qw(Tie::StdHash Data::Inherited Class::Accessor::Complex);
-#<<<
 __PACKAGE__
     ->mk_boolean_accessors(qw(dirty))
     ->mk_set_accessors(qw(hygienic unhygienic));
-#>>>
-use constant HYGIENIC => (
-    qw/
-      dirty hygienic unhygienic
-      /
-);
+use constant HYGIENIC => ( qw(dirty hygienic unhygienic));
 
 # STORE() always gets called with this package as ref($self), not with the
 # original class. So we rely on constructor_with_dirty telling us what the
@@ -40,14 +37,18 @@ sub STORE {
     $self->{$key} = $value;
 }
 1;
+
+
 __END__
-
-
+=pod
 
 =head1 NAME
 
-Class::Accessor::Constructor::Base - Support for an automated dirty flag in
-hash-based classes
+Class::Accessor::Constructor::Base - Support for an automated dirty flag in hash-based classes
+
+=head1 VERSION
+
+version 1.100830
 
 =head1 SYNOPSIS
 
@@ -61,34 +62,39 @@ hash-based classes
 See L<Class::Accessor::Constructor::Base>'s C<constructor_with_dirty> for a
 usage.
 
+=head1 INSTALLATION
+
+See perlmodinstall for information and options on installing Perl modules.
+
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.
 
 Please report any bugs or feature requests through the web interface at
-L<http://rt.cpan.org>.
-
-=head1 INSTALLATION
-
-See perlmodinstall for information and options on installing Perl modules.
+L<http://rt.cpan.org/Public/Dist/Display.html?Name=Class-Accessor-Constructor>.
 
 =head1 AVAILABILITY
 
 The latest version of this module is available from the Comprehensive Perl
-Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a CPAN
-site near you. Or see L<http://search.cpan.org/dist/Class-Accessor-Constructor/>.
+Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
+site near you, or see
+L<http://search.cpan.org/dist/Class-Accessor-Constructor/>.
 
-=head1 AUTHORS
+The development version lives at
+L<http://github.com/hanekomu/Class-Accessor-Constructor/>.
+Instead of sending patches, please fork this project using the standard git
+and github infrastructure.
 
-Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
+=head1 AUTHOR
+
+  Marcel Gruenauer <marcel@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007-2009 by the authors.
+This software is copyright (c) 2007 by Marcel Gruenauer.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
 

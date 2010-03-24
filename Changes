@@ -1,5 +1,8 @@
 Revision history for Perl extension Class-Accessor-Constructor
 
+1.100830  2010-03-24 10:42:05 Europe/Vienna
+    - converted the distribution to Dist::Zilla-style
+
 0.08 Mon 2009.12.07 23:34:29 CET (Marcel Gruenauer <marcel@cpan.org>)
      - reduced dependencies using author tests
      - better dist engineering (INSTALL, README, README.mkdn etc.)

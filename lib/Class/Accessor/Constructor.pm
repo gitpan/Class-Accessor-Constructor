@@ -1,10 +1,12 @@
-package Class::Accessor::Constructor;
-use 5.006;
-use warnings;
+use 5.008;
 use strict;
+use warnings;
+
+package Class::Accessor::Constructor;
+our $VERSION = '1.100830';
+# ABSTRACT: Constructor generator
 use Carp 'cluck';
-our $VERSION = '0.08';
-use base qw(
+use parent qw(
   Class::Accessor
   Class::Accessor::Installer
   Data::Inherited
@@ -183,11 +185,18 @@ EODOC
     }
 }
 1;
+
+
 __END__
+=pod
 
 =head1 NAME
 
 Class::Accessor::Constructor - Constructor generator
+
+=head1 VERSION
+
+version 1.100830
 
 =head1 SYNOPSIS
 
@@ -204,10 +213,7 @@ values, this module provides accessor makers for rather flexible constructors.
 The accessor generators also generate documentation ready to be used with
 L<Pod::Generated>.
 
-=head1 ACCESSORS
-
-This section describes the accessor makers offered by this module, and the
-methods it generates.
+=head1 METHODS
 
 =head2 mk_constructor
 
@@ -317,7 +323,7 @@ then
 
     my $test = Simple->new(a => 1, b => 2);
 
-will set C<b> first, then set <a> (to 3).
+will set C<b> first, then set C<a> (to 3).
 
 As mentioned, arguments are munged beforehand automatically, but you can also
 customize the munging. By default,
@@ -372,7 +378,6 @@ the constructor at the appropriate point. For example:
 
     __PACKAGE__->mk_constructor;
 
-
     package Bar;
     use base 'Foo';
     __PACKAGE__->mk_constructor_with_dirty;
@@ -384,32 +389,39 @@ C<Bar> and its descendants will.
 
 Like C<constructor> but constructs a singleton object.
 
+=head1 INSTALLATION
+
+See perlmodinstall for information and options on installing Perl modules.
+
 =head1 BUGS AND LIMITATIONS
 
 No bugs have been reported.
 
 Please report any bugs or feature requests through the web interface at
-L<http://rt.cpan.org>.
-
-=head1 INSTALLATION
-
-See perlmodinstall for information and options on installing Perl modules.
+L<http://rt.cpan.org/Public/Dist/Display.html?Name=Class-Accessor-Constructor>.
 
 =head1 AVAILABILITY
 
 The latest version of this module is available from the Comprehensive Perl
-Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a CPAN
-site near you. Or see L<http://search.cpan.org/dist/Class-Accessor-Constructor/>.
+Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
+site near you, or see
+L<http://search.cpan.org/dist/Class-Accessor-Constructor/>.
 
-=head1 AUTHORS
+The development version lives at
+L<http://github.com/hanekomu/Class-Accessor-Constructor/>.
+Instead of sending patches, please fork this project using the standard git
+and github infrastructure.
 
-Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
+=head1 AUTHOR
+
+  Marcel Gruenauer <marcel@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007-2009 by the authors.
+This software is copyright (c) 2007 by Marcel Gruenauer.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
+
