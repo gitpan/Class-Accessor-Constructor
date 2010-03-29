@@ -3,7 +3,8 @@ use strict;
 use warnings;
 
 package Class::Accessor::Constructor;
-our $VERSION = '1.100830';
+our $VERSION = '1.100880';
+
 # ABSTRACT: Constructor generator
 use Carp 'cluck';
 use parent qw(
@@ -29,6 +30,9 @@ sub mk_singleton_constructor {
                 my $self = shift;
                 $singleton ||= $self->$instance_method(@_);
             },
+        );
+        $self->document_accessor(
+            name    => $name,
             purpose => <<'EODOC',
 Creates and returns a new object. The object will be a singleton, so repeated
 calls to the constructor will always return the same object. The constructor
@@ -38,7 +42,7 @@ method of the same name with the given value. If called with a single hash
 reference, it is dereferenced and its key/value pairs are set as described
 before.
 EODOC
-            example => [
+            examples => [
                 "my \$obj = $class->$name;",
                 "my \$obj = $class->$name(\%args);",
             ],
@@ -170,6 +174,9 @@ sub _make_constructor {
                 $self->init(%args) if $init;
                 $self;
             },
+        );
+        $self->document_accessor(
+            name    => $name,
             purpose => <<'EODOC',
 Creates and returns a new object. The constructor will accept as arguments a
 list of pairs, from component name to initial value. For each pair, the named
@@ -177,7 +184,7 @@ component is initialized by calling the method of the same name with the given
 value. If called with a single hash reference, it is dereferenced and its
 key/value pairs are set as described before.
 EODOC
-            example => [
+            examples => [
                 "my \$obj = $target_class->$name;",
                 "my \$obj = $target_class->$name(\%args);",
             ]
@@ -196,7 +203,7 @@ Class::Accessor::Constructor - Constructor generator
 
 =head1 VERSION
 
-version 1.100830
+version 1.100880
 
 =head1 SYNOPSIS
 
@@ -211,7 +218,7 @@ L<Class::Accessor> does. While the latter deals with accessors for scalar
 values, this module provides accessor makers for rather flexible constructors.
 
 The accessor generators also generate documentation ready to be used with
-L<Pod::Generated>.
+L<Sub::Documentation>.
 
 =head1 METHODS
 

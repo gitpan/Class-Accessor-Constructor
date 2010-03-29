@@ -4,7 +4,7 @@ use strict;
 use Test::More tests => 10;
 
 package Foo;
-use base 'Class::Accessor::Constructor';
+use parent 'Class::Accessor::Constructor';
 __PACKAGE__->mk_constructor->mk_accessors(qw(name));
 use constant DEFAULTS => (name => 'Shindou Hikaru',);
 sub init { }

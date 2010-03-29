@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 package Class::Accessor::Constructor::Base;
-our $VERSION = '1.100830';
+our $VERSION = '1.100880';
 # ABSTRACT: Support for an automated dirty flag in hash-based classes
 use Data::Inherited;
 use Class::Accessor::Complex;
@@ -48,7 +48,7 @@ Class::Accessor::Constructor::Base - Support for an automated dirty flag in hash
 
 =head1 VERSION
 
-version 1.100830
+version 1.100880
 
 =head1 SYNOPSIS
 

@@ -2,7 +2,7 @@ NAME
     Class::Accessor::Constructor - Constructor generator
 
 VERSION
-    version 1.100830
+    version 1.100880
 
 SYNOPSIS
       package MyClass;
@@ -16,7 +16,7 @@ DESCRIPTION
     constructors.
 
     The accessor generators also generate documentation ready to be used
-    with Pod::Generated.
+    with Sub::Documentation.
 
 METHODS
   mk_constructor

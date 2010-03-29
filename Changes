@@ -1,5 +1,9 @@
 Revision history for Perl extension Class-Accessor-Constructor
 
+1.100880  2010-03-29 20:30:10 Europe/Vienna
+    - use parent instead of use base
+    - use Class::Accessor::Installer->document_accessor()
+
 1.100830  2010-03-24 10:42:05 Europe/Vienna
     - converted the distribution to Dist::Zilla-style
 

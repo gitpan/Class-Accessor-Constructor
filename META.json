@@ -9,7 +9,7 @@
       "version" : 1.4,
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
    },
-   "version" : "1.100830",
+   "version" : "1.100880",
    "name" : "Class-Accessor-Constructor",
    "author" : [
       "Marcel Gruenauer <marcel@cpan.org>"
@@ -18,11 +18,11 @@
    "build_requires" : {},
    "provides" : {
       "Class::Accessor::Constructor" : {
-         "version" : "1.100830",
+         "version" : "1.100880",
          "file" : "lib/Class/Accessor/Constructor.pm"
       },
       "Class::Accessor::Constructor::Base" : {
-         "version" : "1.100830",
+         "version" : "1.100880",
          "file" : "lib/Class/Accessor/Constructor/Base.pm"
       }
    },

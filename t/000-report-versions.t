@@ -398,6 +398,8 @@ BEGIN {
     # Module::Install, or that mess with the test count, such as the Test::*
     # modules listed here.
     my %skip = map { $_ => 1 } qw(
+      App::FatPacker
+      Class::Accessor::Classy
       Module::Install
       Test::YAML::Meta
       Test::Pod::Coverage
@@ -419,7 +421,11 @@ BEGIN {
 
     diag("Testing with Perl $], $^X");
     for my $module (sort keys %requires) {
-        next if $skip{$module};
+        if ($skip{$module}) {
+            note "$module doesn't want to be loaded directly, skipping";
+            next;
+        }
+        local $SIG{__WARN__} = sub { note "$module: $_[0]" };
         use_ok $module or BAIL_OUT("can't load $module");
         my $version = $module->VERSION;
         $version = 'undefined' unless defined $version;

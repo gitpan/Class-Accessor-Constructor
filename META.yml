@@ -14,10 +14,10 @@ name: Class-Accessor-Constructor
 provides:
   Class::Accessor::Constructor:
     file: lib/Class/Accessor/Constructor.pm
-    version: 1.100830
+    version: 1.100880
   Class::Accessor::Constructor::Base:
     file: lib/Class/Accessor/Constructor/Base.pm
-    version: 1.100830
+    version: 1.100880
 requires:
   Carp: 0
   Class::Accessor: 0
@@ -37,4 +37,4 @@ resources:
   bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=Class-Accessor-Constructor
   homepage: http://search.cpan.org/dist/Class-Accessor-Constructor/
   repository: http://github.com/hanekomu/Class-Accessor-Constructor
-version: 1.100830
+version: 1.100880
