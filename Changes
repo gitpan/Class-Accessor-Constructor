@@ -1,5 +1,8 @@
 Revision history for Perl extension Class-Accessor-Constructor
 
+1.111590  2011-06-08 10:40:17 Europe/Vienna
+    - require Class::Accessor::Installer 1.100880 (thanks Steve Huff)
+
 1.100880  2010-03-29 20:30:10 Europe/Vienna
     - use parent instead of use base
     - use Class::Accessor::Installer->document_accessor()

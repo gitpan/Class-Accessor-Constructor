@@ -3,7 +3,9 @@ use strict;
 use warnings;
 
 package Class::Accessor::Constructor::Base;
-our $VERSION = '1.100880';
+BEGIN {
+  $Class::Accessor::Constructor::Base::VERSION = '1.111590';
+}
 # ABSTRACT: Support for an automated dirty flag in hash-based classes
 use Data::Inherited;
 use Class::Accessor::Complex;
@@ -48,7 +50,7 @@ Class::Accessor::Constructor::Base - Support for an automated dirty flag in hash
 
 =head1 VERSION
 
-version 1.100880
+version 1.111590
 
 =head1 SYNOPSIS
 
@@ -77,17 +79,16 @@ L<http://rt.cpan.org/Public/Dist/Display.html?Name=Class-Accessor-Constructor>.
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
-site near you, or see
-L<http://search.cpan.org/dist/Class-Accessor-Constructor/>.
+site near you, or see L<http://search.cpan.org/dist/Class-Accessor-Constructor/>.
 
-The development version lives at
-L<http://github.com/hanekomu/Class-Accessor-Constructor/>.
-Instead of sending patches, please fork this project using the standard git
-and github infrastructure.
+The development version lives at L<http://github.com/hanekomu/Class-Accessor-Constructor>
+and may be cloned from L<git://github.com/hanekomu/Class-Accessor-Constructor.git>.
+Instead of sending patches, please fork this project using the standard
+git and github infrastructure.
 
 =head1 AUTHOR
 
-  Marcel Gruenauer <marcel@cpan.org>
+Marcel Gruenauer <marcel@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

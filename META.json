@@ -1,50 +1,70 @@
 {
-   "resources" : {
-      "homepage" : "http://search.cpan.org/dist/Class-Accessor-Constructor/",
-      "repository" : "http://github.com/hanekomu/Class-Accessor-Constructor",
-      "bugtracker" : "http://rt.cpan.org/Public/Dist/Display.html?Name=Class-Accessor-Constructor"
-   },
-   "generated_by" : "Dist::Zilla version 1.100711",
-   "meta-spec" : {
-      "version" : 1.4,
-      "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
-   },
-   "version" : "1.100880",
-   "name" : "Class-Accessor-Constructor",
+   "abstract" : "Constructor generator",
    "author" : [
       "Marcel Gruenauer <marcel@cpan.org>"
    ],
-   "license" : "perl",
-   "build_requires" : {},
-   "provides" : {
-      "Class::Accessor::Constructor" : {
-         "version" : "1.100880",
-         "file" : "lib/Class/Accessor/Constructor.pm"
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.200007, CPAN::Meta::Converter version 2.110930",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Class-Accessor-Constructor",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
       },
-      "Class::Accessor::Constructor::Base" : {
-         "version" : "1.100880",
-         "file" : "lib/Class/Accessor/Constructor/Base.pm"
+      "runtime" : {
+         "requires" : {
+            "Carp" : 0,
+            "Class::Accessor" : 0,
+            "Class::Accessor::Complex" : 0,
+            "Class::Accessor::Installer" : "1.100880",
+            "Data::Inherited" : 0,
+            "Tie::Hash" : 0,
+            "constant" : 0,
+            "parent" : 0,
+            "perl" : "5.008"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "English" : 0,
+            "File::Find" : 0,
+            "File::Temp" : 0,
+            "Scalar::Util" : 0,
+            "Test::More" : "0.94"
+         }
       }
    },
-   "requires" : {
-      "Class::Accessor::Complex" : "0",
-      "Scalar::Util" : "0",
-      "English" : "0",
-      "parent" : "0",
-      "Class::Accessor" : "0",
-      "constant" : "0",
-      "Class::Accessor::Installer" : "0",
-      "Tie::Hash" : "0",
-      "Carp" : "0",
-      "Test::More" : "0.88",
-      "perl" : "5.008",
-      "File::Find" : "0",
-      "File::Temp" : "0",
-      "Data::Inherited" : "0"
+   "provides" : {
+      "Class::Accessor::Constructor" : {
+         "file" : "lib/Class/Accessor/Constructor.pm",
+         "version" : "1.111590"
+      },
+      "Class::Accessor::Constructor::Base" : {
+         "file" : "lib/Class/Accessor/Constructor/Base.pm",
+         "version" : "1.111590"
+      }
    },
-   "abstract" : "Constructor generator",
-   "configure_requires" : {
-      "ExtUtils::MakeMaker" : "6.11"
-   }
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "mailto" : "bug-class-accessor-constructor at rt.cpan.org",
+         "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=Class-Accessor-Constructor"
+      },
+      "homepage" : "http://search.cpan.org/dist/Class-Accessor-Constructor/",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/hanekomu/Class-Accessor-Constructor.git",
+         "web" : "http://github.com/hanekomu/Class-Accessor-Constructor"
+      }
+   },
+   "version" : "1.111590"
 }
 

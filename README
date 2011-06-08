@@ -2,7 +2,7 @@ NAME
     Class::Accessor::Constructor - Constructor generator
 
 VERSION
-    version 1.100880
+    version 1.111590
 
 SYNOPSIS
       package MyClass;
@@ -203,12 +203,13 @@ AVAILABILITY
     <http://search.cpan.org/dist/Class-Accessor-Constructor/>.
 
     The development version lives at
-    <http://github.com/hanekomu/Class-Accessor-Constructor/>. Instead of
-    sending patches, please fork this project using the standard git and
-    github infrastructure.
+    <http://github.com/hanekomu/Class-Accessor-Constructor> and may be
+    cloned from <git://github.com/hanekomu/Class-Accessor-Constructor.git>.
+    Instead of sending patches, please fork this project using the standard
+    git and github infrastructure.
 
 AUTHOR
-      Marcel Gruenauer <marcel@cpan.org>
+    Marcel Gruenauer <marcel@cpan.org>
 
 COPYRIGHT AND LICENSE
     This software is copyright (c) 2007 by Marcel Gruenauer.
